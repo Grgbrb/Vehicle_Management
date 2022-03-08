@@ -1,0 +1,24 @@
+
+
+<h2 class="text-center text-primary mb-2">Create a new vehicle</h2>
+<form [formGroup]='registerForm' (ngSubmit)="register()">
+   <app-text-input [formControl]='registerForm.controls["color"]' [label]='"Color"'></app-text-input>
+   <app-text-input [formControl]='registerForm.controls["maxSpeed"]' [label]='"Max Speed"'></app-text-input>
+   <app-text-input [formControl]='registerForm.controls["numberOfDoors"]' [label]='"Number of Doors"'></app-text-input>
+   <app-text-input [formControl]='registerForm.controls["numberOfWheels"]' [label]='"Number of wheels"'></app-text-input>
+   <app-text-input [formControl]='registerForm.controls["model"]' [label]='"Model"'></app-text-input>
+   <app-text-input [formControl]='registerForm.controls["manufacturer"]' [label]='"Manufacturer"'></app-text-input>
+   <app-text-input [formControl]='registerForm.controls["vin"]' [label]='"Vin"'></app-text-input>
+   
+   <app-text-input [formControl]='registerForm.controls["licensePlate"]' [label]='"License Plate"'></app-text-input>
+   
+   <div class="row mt-5" *ngIf="validationErrors.length > 0">
+      <ul class="text-danger">
+          <li *ngFor="let errors of validationErrors"> {{errors}}</li>
+      </ul>
+  </div>
+   <div class="form-group text-center">
+      <button class="btn btn-success mr-2" [disabled]="!registerForm.valid" type="submit">Create</button>
+   </div>
+</form>
+<p>form value {{registerForm.value | json}}</p>

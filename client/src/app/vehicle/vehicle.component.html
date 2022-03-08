@@ -1,0 +1,27 @@
+
+<h4 class="text-center pb-2">Vehicle Management</h4>
+<div class="text-end">
+   <button type="button" class="btn btn-success text-right btn-s mb-3" routerLink='/add-vehicle'>
+    <i class="bi bi-plus-circle"></i> Add New Vehicle</button>
+</div>
+
+<table class="table ">
+   <tr class="table-primary">
+      <th class="primary" style="width: 13%;">Model</th>
+      <th class="primary" style="width: 13%;">Manufacturer</th>
+      <th class="primary" style="width: 13%;">Color</th>
+      <th class="primary" style="width: 13%;">Max Speed</th>
+      <th class="primary" style="width: 13%;">Vin</th>
+      <th class="primary" style="width: 13%;">License Plate</th>
+   </tr>
+   <tr  *ngFor="let vehicle of vehicles"  >
+      <td class="p-1">{{vehicle.model}}</td>
+      <td class="p-1">{{vehicle.manufacturer}}</td>
+      <td class="p-1">{{vehicle.color}}</td>
+      <td class="p-1">{{vehicle.maxSpeed}}</td>
+      <td class="p-1">{{vehicle.vin}}</td>
+      <td class="p-1">{{vehicle.licensePlate}}</td>
+      <td class="p-1"><button class="btn btn-outline-success" routerLink='/edit-vehicle/{{vehicle.id}}'><i class="bi bi-pencil"></i> Edit Car</button></td>
+      <td class="p-1"><button class="btn btn-outline-danger"  (click)="deleteCar(vehicle.id)"><i class="bi bi-trash"></i> Delete Car</button></td>
+   </tr>
+</table>

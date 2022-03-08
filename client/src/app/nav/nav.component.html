@@ -1,0 +1,17 @@
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" routerLink='/' >Vehicle Management</a>
+            
+        <ul class="navbar-nav me-auto mb-2 mb-md-0" >
+            <ng-container>
+                <li class="nav-item">
+                    <a class="nav-link " aria-current="page" [routerLink]="['/vehicles']" routerLinkActive='active'>Vehicles</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink='/motorcycles' routerLinkActive='active'>Motorcycles</a>
+                </li>           
+            </ng-container>
+        </ul>
+    </div>
+</nav>
+

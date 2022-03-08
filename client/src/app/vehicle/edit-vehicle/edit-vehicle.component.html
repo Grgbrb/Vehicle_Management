@@ -1,0 +1,66 @@
+<div *ngIf="vehicle">
+    <div class="col-4">
+       <h2>Your {{vehicle.model}}</h2>
+    </div>
+    <div class="col-8">
+        <div  class="alert alert-info" *ngIf="editForm?.dirty">
+            <strong>Information:</strong> You have made changes. Any unsaved changes will be lost.
+        </div>
+ </div>
+ 
+</div>
+ <div *ngIf="vehicle" class="row">
+    <div class="col-4">
+       <div class="card-body">
+          <div>
+             <strong>Color</strong>  
+             <p>{{vehicle.color}}</p>
+          </div>
+          <div>
+             <strong>Manufacturer</strong>  
+             <p>{{vehicle.manufacturer}}</p>
+          </div>
+          <div>
+             <strong>Vin</strong>  
+             <p>{{vehicle.vin}}</p>
+          </div>
+          <div>
+             <strong>License Plate</strong>  
+             <p>{{vehicle.licensePlate}}</p>
+          </div>
+          <div>
+             <strong>Max Speed</strong>  
+             <p>{{vehicle.maxSpeed}}</p>
+          </div>
+          <div>
+             <strong>Number Of Doors</strong>  
+             <p>{{vehicle.numberOfDoors}}</p>
+          </div>
+          <div>
+             <strong>Number of Wheels</strong>  
+             <p>{{vehicle.numberOfWheels}}</p>
+          </div>
+       </div>
+       <div class="card-footer text-center">
+        <button [disabled]="!editForm.dirty" type="submit" form="editForm" class="btn btn-success btn-block">Update Vehicle </button>
+    </div>
+    </div>
+    <div class="col-8">
+       <form #editForm="ngForm" id="editForm" (ngSubmit)="updateVehicle()">
+       <h5>Color</h5>
+       <textarea class="form-control" [(ngModel)]="vehicle.color" name="color" rows="1"></textarea> 
+       <h5>Manufacturer</h5>
+       <textarea class="form-control" [(ngModel)]="vehicle.manufacturer" name="manufacturer" rows="1"></textarea>
+       <h5>Vin</h5>
+       <textarea class="form-control" [(ngModel)]="vehicle.vin" name="vin" rows="1"></textarea>
+       <h5>License Plate</h5>
+       <textarea class="form-control" [(ngModel)]="vehicle.licensePlate" name="licensePlate" rows="1"></textarea>
+       <h5>Max Speed</h5>
+       <textarea class="form-control" [(ngModel)]="vehicle.maxSpeed" name="maxSpeed" rows="1"></textarea>
+       <h5>Number Of Doors</h5>
+       <textarea class="form-control" [(ngModel)]="vehicle.numberOfDoors" name="numberOfDoors" rows="1"></textarea>
+       <h5>Number of Wheels</h5>
+       <textarea class="form-control" [(ngModel)]="vehicle.numberOfWheels" name="numberOfWheels" rows="1"></textarea>
+       </form> 
+    </div>
+ </div>
