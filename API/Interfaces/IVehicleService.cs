@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Entities;
-
+using API.Helpers;
 
 namespace API.Interfaces
 {
@@ -12,7 +12,7 @@ namespace API.Interfaces
         Task<Vehicle> AddVehicleAsync(Vehicle vehicle);
         public void  updateVehicle(Vehicle vehicle);
         Task<Vehicle> deleteVehicleAsync(Vehicle vehicle);
-        Task<IEnumerable<Vehicle>> GetVehiclesAsync();
+        Task<PagedList<Vehicle>> GetVehiclesAsync(VehicleParams vehicleParams);
         Task<Vehicle> GetVehicleAsync(int id);
     }
 }

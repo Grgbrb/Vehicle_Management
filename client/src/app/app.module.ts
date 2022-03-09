@@ -17,6 +17,7 @@ import { TextInputComponent } from './_text-input/text-input/text-input.componen
 import { ToastrModule } from 'ngx-toastr';
 import { ErrorInterceptor } from './_interceptors/error.interceptor';
 import { EditVehicleComponent } from './vehicle/edit-vehicle/edit-vehicle.component';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
 
 
 @NgModule({
@@ -43,6 +44,7 @@ import { EditVehicleComponent } from './vehicle/edit-vehicle/edit-vehicle.compon
     ToastrModule.forRoot({
       positionClass: "toast-bottom-right"
     }),
+    PaginationModule.forRoot(),
     
   ],
   providers: [VehiclesService,

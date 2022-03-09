@@ -10,10 +10,10 @@
 
 import { mergeMap as _observableMergeMap, catchError as _observableCatch } from 'rxjs/operators';
 import { Observable, throwError as _observableThrow, of as _observableOf } from 'rxjs';
-import { Injectable, Inject, Optional, InjectionToken  } from '@angular/core';
+import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
 
-export const API_BASE_URL = new InjectionToken ('API_BASE_URL');
+export const API_BASE_URL = new InjectionToken('API_BASE_URL');
 
 @Injectable()
 export class MotorcyclesService {
@@ -26,7 +26,7 @@ export class MotorcyclesService {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:7009";
     }
 
-    getMotorCycles(): Observable<Motor[]> {
+    motorcycles_GetMotorCycles(): Observable<Motor[]> {
         let url_ = this.baseUrl + "/api/Motorcycles";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -39,11 +39,11 @@ export class MotorcyclesService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetMotorCycles(response_);
+            return this.processMotorcycles_GetMotorCycles(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetMotorCycles(response_ as any);
+                    return this.processMotorcycles_GetMotorCycles(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<Motor[]>;
                 }
@@ -52,7 +52,7 @@ export class MotorcyclesService {
         }));
     }
 
-    protected processGetMotorCycles(response: HttpResponseBase): Observable<Motor[]> {
+    protected processMotorcycles_GetMotorCycles(response: HttpResponseBase): Observable<Motor[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -81,7 +81,7 @@ export class MotorcyclesService {
         return _observableOf(null as any);
     }
 
-    getMotocycle(id: number): Observable<Motor> {
+    motorcycles_GetMotocycle(id: number): Observable<Motor> {
         let url_ = this.baseUrl + "/api/Motorcycles/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -97,11 +97,11 @@ export class MotorcyclesService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetMotocycle(response_);
+            return this.processMotorcycles_GetMotocycle(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetMotocycle(response_ as any);
+                    return this.processMotorcycles_GetMotocycle(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<Motor>;
                 }
@@ -110,7 +110,7 @@ export class MotorcyclesService {
         }));
     }
 
-    protected processGetMotocycle(response: HttpResponseBase): Observable<Motor> {
+    protected processMotorcycles_GetMotocycle(response: HttpResponseBase): Observable<Motor> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -136,7 +136,7 @@ export class MotorcyclesService {
 @Injectable()
 export class VehiclesService {
     private http: HttpClient;
-    private baseUrl: string;
+    public baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
@@ -144,8 +144,16 @@ export class VehiclesService {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:7009";
     }
 
-    getVehicles(): Observable<Vehicle[]> {
-        let url_ = this.baseUrl + "/api/Vehicles";
+    getVehicles(pageNumber: number | undefined, pageSize: number | undefined): Observable<Vehicle[]> {
+        let url_ = this.baseUrl + "/api/Vehicles?";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -157,11 +165,13 @@ export class VehiclesService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetVehicles(response_);
+            return this.processgetVehicles(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
+                
                 try {
-                    return this.processGetVehicles(response_ as any);
+                    return this.processgetVehicles(response_ as any) ;
+                    
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<Vehicle[]>;
                 }
@@ -170,11 +180,12 @@ export class VehiclesService {
         }));
     }
 
-    protected processGetVehicles(response: HttpResponseBase): Observable<Vehicle[]> {
+    protected processgetVehicles(response: HttpResponseBase): Observable<Vehicle[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
+            
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
@@ -216,11 +227,11 @@ export class VehiclesService {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCreateVehicle(response_);
+            return this.processcreateVehicle(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCreateVehicle(response_ as any);
+                    return this.processcreateVehicle(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<Vehicle>;
                 }
@@ -229,7 +240,7 @@ export class VehiclesService {
         }));
     }
 
-    protected processCreateVehicle(response: HttpResponseBase): Observable<Vehicle> {
+    protected processcreateVehicle(response: HttpResponseBase): Observable<Vehicle> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -267,11 +278,11 @@ export class VehiclesService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetVehicle(response_);
+            return this.processgetVehicle(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetVehicle(response_ as any);
+                    return this.processgetVehicle(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<Vehicle>;
                 }
@@ -280,7 +291,7 @@ export class VehiclesService {
         }));
     }
 
-    protected processGetVehicle(response: HttpResponseBase): Observable<Vehicle> {
+    protected processgetVehicle(response: HttpResponseBase): Observable<Vehicle> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -319,11 +330,11 @@ export class VehiclesService {
         };
 
         return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processUpdateVehicle(response_);
+            return this.processupdateVehicle(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processUpdateVehicle(response_ as any);
+                    return this.processupdateVehicle(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<Vehicle>;
                 }
@@ -332,7 +343,7 @@ export class VehiclesService {
         }));
     }
 
-    protected processUpdateVehicle(response: HttpResponseBase): Observable<Vehicle> {
+    protected processupdateVehicle(response: HttpResponseBase): Observable<Vehicle> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -371,11 +382,11 @@ export class VehiclesService {
         };
 
         return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processDeleteVehicle(response_);
+            return this.processdeleteVehicle(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processDeleteVehicle(response_ as any);
+                    return this.processdeleteVehicle(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<Vehicle>;
                 }
@@ -384,7 +395,7 @@ export class VehiclesService {
         }));
     }
 
-    protected processDeleteVehicle(response: HttpResponseBase): Observable<Vehicle> {
+    protected processdeleteVehicle(response: HttpResponseBase): Observable<Vehicle> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -418,7 +429,7 @@ export class WeatherForecastService {
         this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:7009";
     }
 
-    get(): Observable<WeatherForecast[]> {
+    weatherForecast_Get(): Observable<WeatherForecast[]> {
         let url_ = this.baseUrl + "/WeatherForecast";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -431,11 +442,11 @@ export class WeatherForecastService {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGet(response_);
+            return this.processWeatherForecast_Get(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGet(response_ as any);
+                    return this.processWeatherForecast_Get(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<WeatherForecast[]>;
                 }
@@ -444,7 +455,7 @@ export class WeatherForecastService {
         }));
     }
 
-    protected processGet(response: HttpResponseBase): Observable<WeatherForecast[]> {
+    protected processWeatherForecast_Get(response: HttpResponseBase): Observable<WeatherForecast[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :

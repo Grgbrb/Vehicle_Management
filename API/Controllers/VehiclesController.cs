@@ -11,7 +11,8 @@ using API.Interfaces;
 using API.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
-
+using API.Helpers;
+using API.Extensions;
 
 namespace API.Controllers
 {
@@ -28,9 +29,12 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Vehicle>>> GetVehicles()
+        public async Task<ActionResult<IEnumerable<Vehicle>>> GetVehicles([FromQuery] VehicleParams vehicleParams)
         {
-            var vehicles = await _vehicleService.GetVehiclesAsync();
+            var vehicles = await _vehicleService.GetVehiclesAsync(vehicleParams);
+
+            Response.AddPaginationHeader(vehicles.CurrentPage,vehicles.PageSize,vehicles.TotalCount,vehicles.TotalPages);
+
             return Ok(vehicles);
         }
 

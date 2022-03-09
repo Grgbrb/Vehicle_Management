@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using API.Interfaces;
 using API.Entities;
 using Microsoft.EntityFrameworkCore;
-
+using API.Helpers;
 
 namespace API.Data
 {
@@ -34,10 +34,11 @@ namespace API.Data
             await _context.SaveChangesAsync();
             return vehicle;
         }
-        public async Task<IEnumerable<Vehicle>> GetVehiclesAsync()
+        public async Task<PagedList<Vehicle>> GetVehiclesAsync(VehicleParams vehicleParams)
         {
-            var vehicles = await _context.Vehicles.ToListAsync();
-            return vehicles;
+            var query = _context.Vehicles.AsNoTracking();
+
+            return await PagedList<Vehicle>.CreateAsync(query,vehicleParams.PageNumber,vehicleParams.pageSize);
         }
         public async Task<Vehicle> GetVehicleAsync(int id)
         {
