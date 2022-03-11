@@ -14,5 +14,7 @@ namespace API.Interfaces
         Task<Vehicle> deleteVehicleAsync(Vehicle vehicle);
         Task<PagedList<Vehicle>> GetVehiclesAsync(VehicleParams vehicleParams);
         Task<Vehicle> GetVehicleAsync(int id);
+         Task<bool> SaveAllAsync();
+        
     }
 }

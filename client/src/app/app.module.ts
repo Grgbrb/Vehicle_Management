@@ -18,7 +18,9 @@ import { ToastrModule } from 'ngx-toastr';
 import { ErrorInterceptor } from './_interceptors/error.interceptor';
 import { EditVehicleComponent } from './vehicle/edit-vehicle/edit-vehicle.component';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-
+import { FileUploadModule } from 'ng2-file-upload';
+import { PhotoEditorComponent } from './vehicle/photo-editor/photo-editor.component';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
     AddVehicleComponent,
     TextInputComponent,
     EditVehicleComponent,
+    PhotoEditorComponent,
     
   ],
   imports: [
@@ -45,6 +48,9 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
       positionClass: "toast-bottom-right"
     }),
     PaginationModule.forRoot(),
+    FileUploadModule,
+    TabsModule.forRoot(),
+    
     
   ],
   providers: [VehiclesService,

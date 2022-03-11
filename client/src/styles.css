@@ -1,2 +1,48 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap-icons/font/bootstrap-icons.css";
+.tab-panel {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+  }
+  
+  .nav-tabs > li.open, .vehicle-tabset > .nav-tabs > li:hover {
+    border-bottom: 4px solid #fbcdcf;
+  }
+  
+  .vehicle-tabset > .nav-tabs > li.open > a, .vehicle-tabset > .nav-tabs > li:hover > a {
+    border: 0;
+    background: none !important;
+    color: #333333;
+  }
+  
+  .vehicle-tabset > .nav-tabs > li.open > a > i, .vehicle-tabset > .nav-tabs > li:hover > a > i {
+    color: #a6a6a6;
+  }
+  
+  .vehicle-tabset > .nav-tabs > li.open .dropdown-menu, .vehicle-tabset > .nav-tabs > li:hover .dropdown-menu {
+    margin-top: 0px;
+  }
+  
+  .vehicle-tabset > .nav-tabs > li.active {
+    border-bottom: 4px solid #4582ec;
+    position: relative;
+    margin-bottom: 20px;
+  }
+  
+  .vehicle-tabset > .nav-tabs > li.active > a {
+    border: 0 !important;
+    color: #333333;
+  }
+  
+  .vehicle-tabset > .nav-tabs > li.active > a > i {
+    color: #404040;
+  }
+  
+  .vehicle-tabset > .tab-content {
+    margin-top: -3px;
+    background-color: #fff;
+    border: 0;
+    border-top: 1px solid #eee;
+    padding: 15px 0;
+  }

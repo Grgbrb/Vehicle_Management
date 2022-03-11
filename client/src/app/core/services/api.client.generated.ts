@@ -16,124 +16,6 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
 
 @Injectable()
-export class MotorcyclesService {
-    private http: HttpClient;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:7009";
-    }
-
-    motorcycles_GetMotorCycles(): Observable<Motor[]> {
-        let url_ = this.baseUrl + "/api/Motorcycles";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processMotorcycles_GetMotorCycles(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processMotorcycles_GetMotorCycles(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<Motor[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<Motor[]>;
-        }));
-    }
-
-    protected processMotorcycles_GetMotorCycles(response: HttpResponseBase): Observable<Motor[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(Motor.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    motorcycles_GetMotocycle(id: number): Observable<Motor> {
-        let url_ = this.baseUrl + "/api/Motorcycles/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processMotorcycles_GetMotocycle(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processMotorcycles_GetMotocycle(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<Motor>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<Motor>;
-        }));
-    }
-
-    protected processMotorcycles_GetMotocycle(response: HttpResponseBase): Observable<Motor> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = Motor.fromJS(resultData200);
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-}
-
-@Injectable()
 export class VehiclesService {
     private http: HttpClient;
     public baseUrl: string;
@@ -168,10 +50,8 @@ export class VehiclesService {
             return this.processgetVehicles(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
-                
                 try {
-                    return this.processgetVehicles(response_ as any) ;
-                    
+                    return this.processgetVehicles(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<Vehicle[]>;
                 }
@@ -185,7 +65,6 @@ export class VehiclesService {
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
-            
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
@@ -416,6 +295,116 @@ export class VehiclesService {
         }
         return _observableOf(null as any);
     }
+
+    AddPhoto(file: FileParameter | null | undefined, id: number | undefined): Observable<PhotoDto> {
+        let url_ = this.baseUrl + "/api/Vehicles/add-photo?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (file !== null && file !== undefined)
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddPhoto(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddPhoto(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PhotoDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PhotoDto>;
+        }));
+    }
+
+    protected processAddPhoto(response: HttpResponseBase): Observable<PhotoDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PhotoDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    DeletePhoto(photoId: number, id: number | undefined): Observable<FileResponse | null> {
+        let url_ = this.baseUrl + "/api/Vehicles/delete-photo/{photoId}?";
+        if (photoId === undefined || photoId === null)
+            throw new Error("The parameter 'photoId' must be defined.");
+        url_ = url_.replace("{photoId}", encodeURIComponent("" + photoId));
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeletePhoto(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeletePhoto(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse | null>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse | null>;
+        }));
+    }
+
+    protected processDeletePhoto(response: HttpResponseBase): Observable<FileResponse | null> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable()
@@ -485,74 +474,6 @@ export class WeatherForecastService {
     }
 }
 
-export class Motor implements IMotor {
-    id!: number;
-    color?: string | undefined;
-    maxSpeed!: number;
-    numberOfDoors!: number;
-    numberOfWheels!: number;
-    model?: string | undefined;
-    manufacturer?: string | undefined;
-    vin!: number;
-    licensePlate?: string | undefined;
-
-    constructor(data?: IMotor) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.color = _data["color"];
-            this.maxSpeed = _data["maxSpeed"];
-            this.numberOfDoors = _data["numberOfDoors"];
-            this.numberOfWheels = _data["numberOfWheels"];
-            this.model = _data["model"];
-            this.manufacturer = _data["manufacturer"];
-            this.vin = _data["vin"];
-            this.licensePlate = _data["licensePlate"];
-        }
-    }
-
-    static fromJS(data: any): Motor {
-        data = typeof data === 'object' ? data : {};
-        let result = new Motor();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["color"] = this.color;
-        data["maxSpeed"] = this.maxSpeed;
-        data["numberOfDoors"] = this.numberOfDoors;
-        data["numberOfWheels"] = this.numberOfWheels;
-        data["model"] = this.model;
-        data["manufacturer"] = this.manufacturer;
-        data["vin"] = this.vin;
-        data["licensePlate"] = this.licensePlate;
-        return data;
-    }
-}
-
-export interface IMotor {
-    id: number;
-    color?: string | undefined;
-    maxSpeed: number;
-    numberOfDoors: number;
-    numberOfWheels: number;
-    model?: string | undefined;
-    manufacturer?: string | undefined;
-    vin: number;
-    licensePlate?: string | undefined;
-}
-
 export class Vehicle implements IVehicle {
     id!: number;
     color?: string | undefined;
@@ -563,6 +484,7 @@ export class Vehicle implements IVehicle {
     manufacturer?: string | undefined;
     vin!: number;
     licensePlate?: string | undefined;
+    photos?: Photo[] | undefined;
 
     constructor(data?: IVehicle) {
         if (data) {
@@ -584,6 +506,11 @@ export class Vehicle implements IVehicle {
             this.manufacturer = _data["manufacturer"];
             this.vin = _data["vin"];
             this.licensePlate = _data["licensePlate"];
+            if (Array.isArray(_data["photos"])) {
+                this.photos = [] as any;
+                for (let item of _data["photos"])
+                    this.photos!.push(Photo.fromJS(item));
+            }
         }
     }
 
@@ -605,6 +532,11 @@ export class Vehicle implements IVehicle {
         data["manufacturer"] = this.manufacturer;
         data["vin"] = this.vin;
         data["licensePlate"] = this.licensePlate;
+        if (Array.isArray(this.photos)) {
+            data["photos"] = [];
+            for (let item of this.photos)
+                data["photos"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -619,6 +551,59 @@ export interface IVehicle {
     manufacturer?: string | undefined;
     vin: number;
     licensePlate?: string | undefined;
+    photos?: Photo[] | undefined;
+}
+
+export class Photo implements IPhoto {
+    id!: number;
+    url?: string | undefined;
+    publicId?: string | undefined;
+    vehicle?: Vehicle | undefined;
+    vehicleId!: number;
+
+    constructor(data?: IPhoto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.url = _data["url"];
+            this.publicId = _data["publicId"];
+            this.vehicle = _data["vehicle"] ? Vehicle.fromJS(_data["vehicle"]) : <any>undefined;
+            this.vehicleId = _data["vehicleId"];
+        }
+    }
+
+    static fromJS(data: any): Photo {
+        data = typeof data === 'object' ? data : {};
+        let result = new Photo();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["url"] = this.url;
+        data["publicId"] = this.publicId;
+        data["vehicle"] = this.vehicle ? this.vehicle.toJSON() : <any>undefined;
+        data["vehicleId"] = this.vehicleId;
+        return data;
+    }
+}
+
+export interface IPhoto {
+    id: number;
+    url?: string | undefined;
+    publicId?: string | undefined;
+    vehicle?: Vehicle | undefined;
+    vehicleId: number;
 }
 
 export class CreateVehicleDto implements ICreateVehicleDto {
@@ -685,6 +670,46 @@ export interface ICreateVehicleDto {
     licensePlate?: string | undefined;
 }
 
+export class PhotoDto implements IPhotoDto {
+    id!: number;
+    url?: string | undefined;
+
+    constructor(data?: IPhotoDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.url = _data["url"];
+        }
+    }
+
+    static fromJS(data: any): PhotoDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PhotoDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["url"] = this.url;
+        return data;
+    }
+}
+
+export interface IPhotoDto {
+    id: number;
+    url?: string | undefined;
+}
+
 export class WeatherForecast implements IWeatherForecast {
     date!: Date;
     temperatureC!: number;
@@ -731,6 +756,18 @@ export interface IWeatherForecast {
     temperatureC: number;
     temperatureF: number;
     summary?: string | undefined;
+}
+
+export interface FileParameter {
+    data: any;
+    fileName: string;
+}
+
+export interface FileResponse {
+    data: Blob;
+    status: number;
+    fileName?: string;
+    headers?: { [name: string]: any };
 }
 
 export class ApiException extends Error {

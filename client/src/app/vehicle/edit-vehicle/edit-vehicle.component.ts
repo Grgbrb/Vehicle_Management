@@ -16,7 +16,7 @@ export class EditVehicleComponent implements OnInit {
   id:number;
 
   constructor(private vehicleService: VehiclesService, private route: ActivatedRoute,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService ) { }
  
 
     ngOnInit()        

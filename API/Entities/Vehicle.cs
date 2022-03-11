@@ -18,5 +18,7 @@ namespace API.Entities
         public string Manufacturer { get; set; }
         public int Vin { get; set; }
         public string LicensePlate { get; set; }
+        public ICollection<Photo> Photos{ get; set;}
+
     }
 }

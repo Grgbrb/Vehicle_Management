@@ -32,10 +32,8 @@ export class HeaderInject {
         
         this.headers =  JSON.parse(response.headers.get('Pagination'));
         this.totalItems = this.headers.totalItems;
-        localStorage.setItem('totalitems',JSON.stringify(this.totalItems));
-        
+        localStorage.setItem('totalitems',JSON.stringify(this.totalItems)); 
     });
-
   }
 }
 

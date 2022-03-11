@@ -36,13 +36,20 @@ namespace API.Data
         }
         public async Task<PagedList<Vehicle>> GetVehiclesAsync(VehicleParams vehicleParams)
         {
-            var query = _context.Vehicles.AsNoTracking();
+            var query = _context.Vehicles.Include(p =>p.Photos).AsNoTracking();
 
             return await PagedList<Vehicle>.CreateAsync(query,vehicleParams.PageNumber,vehicleParams.pageSize);
         }
         public async Task<Vehicle> GetVehicleAsync(int id)
         {
-            return await _context.Vehicles.FindAsync(id);           
+            return await _context.Vehicles.Include(p =>p.Photos)
+            .SingleOrDefaultAsync(x => x.Id == id);
         }
+
+          public async Task<bool> SaveAllAsync()
+        {
+            return await _context.SaveChangesAsync() > 0;
+        }
+
     }
 }

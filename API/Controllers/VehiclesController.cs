@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using API.Helpers;
 using API.Extensions;
+using API.DTOs;
+using AutoMapper;
 
 namespace API.Controllers
 {
@@ -22,8 +24,14 @@ namespace API.Controllers
     {
         private readonly DataContext _context;
         private readonly IVehicleService _vehicleService;
-        public VehiclesController(DataContext context,IVehicleService vehicleService)
+        private readonly IphotoService _photoService;
+        private readonly IMapper _automapper;
+
+        public VehiclesController(DataContext context,IVehicleService vehicleService,
+        IphotoService photoService,IMapper automapper)
         {
+            _automapper = automapper;
+            _photoService = photoService;
             _vehicleService = vehicleService;
             _context = context;
         }
@@ -62,6 +70,7 @@ namespace API.Controllers
                 Color = createVehicleDto.Color,
                 MaxSpeed = createVehicleDto.MaxSpeed,
                 NumberOfDoors = createVehicleDto.NumberOfDoors,
+                NumberOfWheels= createVehicleDto.NumberOfWheels,
                 LicensePlate = createVehicleDto.LicensePlate,
                 Model = createVehicleDto.Model,
                 Vin = createVehicleDto.Vin,
@@ -101,6 +110,54 @@ namespace API.Controllers
             if (vehicle == null) return BadRequest("This vehicle doesn't exist");
             await _vehicleService.deleteVehicleAsync(vehicle);
             return Ok("Vehicle Deleted");
-        }      
+        } 
+
+        [HttpPost("add-photo")]
+        public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file,int id)
+        {
+            var vehicle = await _vehicleService.GetVehicleAsync(id);
+
+            if (vehicle == null) return BadRequest("This vehicle doesn't exist");
+
+            var result = await _photoService.AddPhotoAsync(file);
+            
+            if(result.Error != null) return BadRequest(result.Error.Message) ;
+
+            var photo = new Photo
+            {
+                Url = result.SecureUrl.AbsoluteUri,
+                PublicId = result.PublicId
+            };
+
+            vehicle.Photos.Add(photo);
+        
+           if (await _vehicleService.SaveAllAsync())
+            return Ok();
+
+           return BadRequest("Problem adding the photo");
+        }
+         
+        [HttpDelete ("delete-photo/{photoId}")]
+        public async Task<ActionResult> DeletePhoto(int photoId,int id){
+
+        var vehicle = await _vehicleService.GetVehicleAsync(id);
+        
+        var photo = vehicle.Photos.FirstOrDefault(x => x.Id == photoId);
+
+        if (photo == null) return NotFound();
+
+        if (photo.PublicId != null) 
+        {
+            var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+            if (result.Error != null) return BadRequest(result.Error.Message);
+        }
+
+        vehicle.Photos.Remove(photo);
+           if (await _vehicleService.SaveAllAsync()) return Ok("Photo Deleted");
+
+        
+           return BadRequest("Problem deleting the photo");
+
+        }     
     }
 }

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { inject } from '@angular/core/testing';
-import { VehiclesService } from 'app/core/services/api.client.generated';
+import { Photo, VehiclesService } from 'app/core/services/api.client.generated';
 import { HeaderInject } from 'app/core/services/headerinject';
 import { Pagination } from 'app/_models/pagination';
 import { ToastrService } from 'ngx-toastr';
@@ -18,15 +17,13 @@ export class VehicleComponent implements OnInit {
   currentPage = 1;
   pagination: Pagination;
   totalItems:number;
+  photo:Photo;
 
-  constructor(private vehicleService: VehiclesService,private toastr: ToastrService,private headerInject: HeaderInject) { 
+  constructor(private vehicleService: VehiclesService,private toastr: ToastrService,private headerInject: HeaderInject ) { 
   }
 
   ngOnInit(): void {
-    console.log(this.totalItems);
-
     this.totalItems= JSON.parse(localStorage.getItem('totalitems'));
-        console.log(this.totalItems);
     this.gettotalitems();
     this.getCars();
 }
